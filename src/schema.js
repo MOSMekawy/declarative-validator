@@ -11,7 +11,7 @@ class Schema {
     let dest;
     let err_stack = new Array();
 
-    this.map.forEach((field) => {
+    this.schema.forEach((field) => {
       let field_name = field.path[field.path.length - 1];
       dest = obj;
 
@@ -26,29 +26,30 @@ class Schema {
 
         if (typeof field.validations[key] == "function") {
           _eval = field.validations[key](dest);
-          !_eval &&
+          if (!_eval)
             err_stack.push(
-              new Error(
-                `${key} validator deems the field ${field_name} invalid.`
-              )
+              `${key} validator deems the field ${field_name} invalid.`
             );
-        } else if (typeof field.validations[key] == "object") {
-          console.log(field.validations[key].validator);
+        }
+        if (typeof field.validations[key] == "object") {
           _eval = field.validations[key].validator(dest);
           if (!_eval) {
             let err_msg = field.validations[key].message;
             if (typeof err_msg != "function")
-              err_stack.push(new Error(err_msg));
-            else
-              err_stack.push(
-                new Error(err_msg && err_msg(field_name, key, dest))
-              );
+              err_stack.push(err_msg);
+            else if (typeof err_msg == "function") 
+              err_stack.push(err_msg(field_name, key, dest));
           }
         }
       });
     });
 
-    if (err_stack.length != 0) throw new Error(err_stack);
+    if (err_stack.length != 0) {
+      const err = new Error("VALIDATION_ERROR");
+      err.errors = err_stack;
+
+      throw err;
+    }
   }
 }
 
