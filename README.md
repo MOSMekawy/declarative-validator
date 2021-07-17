@@ -29,4 +29,6 @@ const schema = new Schema({
   }
 });
 
+schema.validate(target_object);
+
 ```
