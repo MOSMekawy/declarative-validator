@@ -1,4 +1,4 @@
-function createConstraint(input) {
+function constrain(input) {
   
   /* 
     Adds metadata value to immediately identify leaf nodes 
@@ -12,4 +12,4 @@ function createConstraint(input) {
 
 }
 
-module.exports = createConstraint;
+module.exports = constrain;
