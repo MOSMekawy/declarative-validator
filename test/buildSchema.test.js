@@ -1,5 +1,5 @@
 const { expect } = require("@jest/globals");
-const mapConstraints = require("../src/map-constraints");
+const mapConstraints = require("../src/build.schema");
 
 test("object path mapping test", () => {
   let truePaths = new Set([ ["email"], ["credential", "password"], ["credential", "token", "access_token"] ]);

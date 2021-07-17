@@ -1,6 +1,6 @@
 const { expect } = require("@jest/globals");
-const constrain = require("../src/create-constraint");
-const DeclarativeValidator = require("../src/declarative-validator");
+const constrain = require("../src/constrain");
+const DeclarativeValidator = require("../src/schema");
 
 test("validator throws error based on field assessment ", () => {
  

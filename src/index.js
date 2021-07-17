@@ -1,4 +1,4 @@
-const constain = require("./create-constraint");
-const DeclarativeValidator = require("./declarative-validator");
+const constrain = require("./constrain");
+const Schema = require("./schema");
 
-module.exports = { constain, DeclarativeValidator }
+module.exports = { constrain, Schema }

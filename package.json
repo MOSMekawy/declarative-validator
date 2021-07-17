@@ -1,5 +1,5 @@
 {
-  "name": "declarative-validator",
+  "name": "schema-validator",
   "version": "1.0.0",
   "description": "validator.js wrapper",
   "main": "index.js",
@@ -23,7 +23,7 @@
   "author": "Mostafa Mekawy",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/MOSMekawy/declarative-validator/issues"
+    "url": "https://github.com/MOSMekawy/schema-validator/issues"
   },
-  "homepage": "https://github.com/MOSMekawy/declarative-validator#readme"
+  "homepage": "https://github.com/MOSMekawy/schema-validator#readme"
 }
