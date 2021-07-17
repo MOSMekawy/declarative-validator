@@ -7,14 +7,16 @@ test("validator throws error on mismatch between validated object and schema", (
     email: constrain({
       isEmail: () => true,
     }),
-    password: constrain({
-      isComplexEnough: (val) => val.length > 6,
-    }),
+    credential: {
+      password: constrain({
+        isComplexEnough: (val) => val.length > 6,
+      }),
+    },
   });
 
-  expect(() =>
-    validator.validate({ email: "mos@g.com", password: "1234567" })
-  ).not.toThrow();
+  expect(() => validator.validate({ email: "mos@g.com" })).toThrow(
+    "SCHEMA_OBJECT_MISMATCH"
+  );
 });
 
 test("validator doesn't throw based on truthy field assessment", () => {
@@ -127,6 +129,16 @@ test("validating a nested field", () => {
     },
   });
 
-  expect(() => validator_0.validate({ email: "mos@g.com", credential: { password: "1234567" } })).not.toThrow();
-  expect(() => validator_0.validate({ email: "mos@g.com", credential: { password: "1234" } })).toThrow();
+  expect(() =>
+    validator_0.validate({
+      email: "mos@g.com",
+      credential: { password: "1234567" },
+    })
+  ).not.toThrow();
+  expect(() =>
+    validator_0.validate({
+      email: "mos@g.com",
+      credential: { password: "1234" },
+    })
+  ).toThrow();
 });

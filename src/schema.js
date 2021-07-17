@@ -19,7 +19,7 @@ class Schema {
         try {
           dest = dest[node];
         } catch {
-          throw new Error("OBJECT_SCHEMA_MISMATCH");
+          throw new Error("SCHEMA_OBJECT_MISMATCH");
         }
       });
 
