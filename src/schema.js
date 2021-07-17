@@ -16,7 +16,11 @@ class Schema {
       dest = obj;
 
       field.path.forEach((node) => {
-        dest = dest[node];
+        try {
+          dest = dest[node];
+        } catch {
+          throw new Error("OBJECT_SCHEMA_MISMATCH");
+        }
       });
 
       Object.keys(field.validations).forEach((key) => {
