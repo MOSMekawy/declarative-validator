@@ -35,9 +35,12 @@ class Schema {
           _eval = field.validations[key].validator(dest);
           if (!_eval) {
             let err_msg = field.validations[key].message;
-            if (typeof err_msg != "function")
-              err_stack.push(err_msg);
-            else if (typeof err_msg == "function") 
+            if (typeof err_msg == "undefined")
+              err_stack.push(
+                `${key} validator deems the field ${field_name} invalid.`
+              );
+            if (typeof err_msg != "function") err_stack.push(err_msg);
+            else if (typeof err_msg == "function")
               err_stack.push(err_msg(field_name, key, dest));
           }
         }
