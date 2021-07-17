@@ -2,6 +2,21 @@ const { expect, test } = require("@jest/globals");
 const constrain = require("../src/constrain");
 const DeclarativeValidator = require("../src/schema");
 
+test("validator throws error on mismatch between validated object and schema", () => {
+  let validator = new DeclarativeValidator({
+    email: constrain({
+      isEmail: () => true,
+    }),
+    password: constrain({
+      isComplexEnough: (val) => val.length > 6,
+    }),
+  });
+
+  expect(() =>
+    validator.validate({ email: "mos@g.com", password: "1234567" })
+  ).not.toThrow();
+});
+
 test("validator doesn't throw based on truthy field assessment", () => {
   let validator = new DeclarativeValidator({
     email: constrain({
