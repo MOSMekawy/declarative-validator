@@ -1,0 +1,29 @@
+{
+  "name": "declarative-validator",
+  "version": "1.0.0",
+  "description": "validator.js wrapper",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^27.0.6"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MOSMekawy/declarative-validator.git"
+  },
+  "keywords": [
+    "validation",
+    "declarative",
+    "validator",
+    "validate"
+  ],
+  "author": "Mostafa Mekawy",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/MOSMekawy/declarative-validator/issues"
+  },
+  "homepage": "https://github.com/MOSMekawy/declarative-validator#readme"
+}
