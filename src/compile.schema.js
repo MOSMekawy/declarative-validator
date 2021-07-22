@@ -6,7 +6,7 @@ function buildSchema(constraints) {
   stack.push(constraints);
   paths.push([]);
 
-  while (stack.length != 0) {
+  while (stack.length !== 0) {
     let currNode = stack.pop();
     let currPath = paths.pop();
 
@@ -16,6 +16,10 @@ function buildSchema(constraints) {
     }
 
     Object.keys(currNode).forEach((key) => {
+      if (key === "_validations") {
+        schema.push({ validations: currNode[key], path: currPath });
+        return;
+      }
       stack.push(currNode[key]);
       paths.push([...currPath, key]);
     });

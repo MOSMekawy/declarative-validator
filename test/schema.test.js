@@ -1,9 +1,9 @@
 const { expect, test } = require("@jest/globals");
 const constrain = require("../src/constrain");
-const DeclarativeValidator = require("../src/schema");
+const SchemaValidator = require("../src/schema.validator");
 
 test("validator throws error on mismatch between validated object and schema", () => {
-  let validator = new DeclarativeValidator({
+  let validator = new SchemaValidator({
     email: constrain({
       isEmail: () => true,
     }),
@@ -20,7 +20,7 @@ test("validator throws error on mismatch between validated object and schema", (
 });
 
 test("validator doesn't throw based on truthy field assessment", () => {
-  let validator = new DeclarativeValidator({
+  let validator = new SchemaValidator({
     email: constrain({
       isEmail: () => true,
     }),
@@ -35,7 +35,7 @@ test("validator doesn't throw based on truthy field assessment", () => {
 });
 
 test("validator throws default error based on falsy field assessment", () => {
-  let validator = new DeclarativeValidator({
+  let validator = new SchemaValidator({
     email: constrain({
       isEmail: () => true,
     }),
@@ -58,7 +58,7 @@ test("validator throws default error based on falsy field assessment", () => {
 });
 
 test("custom validators with message undefined throws", () => {
-  let validator_0 = new DeclarativeValidator({
+  let validator_0 = new SchemaValidator({
     email: constrain({
       isEmail: () => true,
     }),
@@ -75,7 +75,7 @@ test("custom validators with message undefined throws", () => {
 });
 
 test("testing custom validators with string message", () => {
-  let validator_0 = new DeclarativeValidator({
+  let validator_0 = new SchemaValidator({
     email: constrain({
       isEmail: () => true,
     }),
@@ -95,7 +95,7 @@ test("testing custom validators with string message", () => {
 });
 
 test("testing custom validators with custom message function", () => {
-  let validator_0 = new DeclarativeValidator({
+  let validator_0 = new SchemaValidator({
     email: constrain({
       isEmail: () => true,
     }),
@@ -115,7 +115,7 @@ test("testing custom validators with custom message function", () => {
 });
 
 test("validating a nested field", () => {
-  let validator_0 = new DeclarativeValidator({
+  let validator_0 = new SchemaValidator({
     email: constrain({
       isEmail: () => true,
     }),
@@ -141,4 +141,25 @@ test("validating a nested field", () => {
       credential: { password: "1234" },
     })
   ).toThrow();
+});
+
+test("validator checks for fields and throws if they aren't available", () => {
+  let validator = new SchemaValidator({
+    _validations: {
+      required: (node) => {
+        return node.email && node.credential;
+      }
+    },
+    email: constrain({
+      isEmail: () => true,
+    }),
+    credential: {
+      password: constrain({
+        isComplexEnough: (val) => val.length > 6,
+      }),
+    },
+  });
+
+  expect(() => validator.validate({ email: "mos@g.com", credential: { password: "1234567" } })).not.toThrow();
+  expect(() => validator.validate({ email: "mos@g.com"})).toThrow();
 });

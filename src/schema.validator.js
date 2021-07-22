@@ -1,6 +1,6 @@
-const buildSchema = require("./build.schema");
+const buildSchema = require("./compile.schema");
 
-class Schema {
+class SchemaValidator {
   schema;
 
   constructor(constraints) {
@@ -8,16 +8,18 @@ class Schema {
   }
 
   validate(obj) {
-    let dest;
+    let destNode;
+    let parentNode;
     let err_stack = new Array();
 
     this.schema.forEach((field) => {
       let field_name = field.path[field.path.length - 1];
-      dest = obj;
+      destNode = obj;
 
-      field.path.forEach((node) => {
+      field.path.forEach((node, index) => {
         try {
-          dest = dest[node];
+          destNode = destNode[node];
+          if (index === field.path.length - 2) parentNode = destNode;
         } catch {
           throw new SchemaObjectMismatchError("SCHEMA_OBJECT_MISMATCH");
         }
@@ -29,25 +31,23 @@ class Schema {
         if (key === "_isLeaf") return;
 
         if (typeof field.validations[key] === "function") {
-          _eval = field.validations[key](dest);
+          _eval = field.validations[key](destNode, parentNode);
           if (_eval) return;
           err_stack.push(`${key} validator deems the field ${field_name} invalid.`);
         } else if (typeof field.validations[key] === "object") {
-          _eval = field.validations[key].validator(dest);
+          _eval = field.validations[key].validator(destNode, parentNode);
           if (_eval) return;
           let err_msg = field.validations[key].message;
           if (typeof err_msg === "undefined") err_stack.push(`${key} validator deems the field ${field_name} invalid.`);
           else if (typeof err_msg !== "function") err_stack.push(err_msg);
-          else if (typeof err_msg === "function") err_stack.push(err_msg(field_name, key, dest));
+          else if (typeof err_msg === "function") err_stack.push(err_msg(field_name, key, destNode));
         }
       });
     });
 
-    if (err_stack.length === 0) return;
+    if (err_stack.length === 0) return obj;
     
-    const err = new ValidationError("VALIDATION_ERROR");
-    err.errors = err_stack;
-
+    const err = new ValidationError("VALIDATION_ERROR", err_stack);
     throw err;
   }
 }
@@ -63,13 +63,12 @@ class SchemaObjectMismatchError extends Error {
 
 class ValidationError extends Error {
   
-  errors = [];
-
-  constructor(message) {
+  constructor(message, errors) {
     super(message);
     this.name = "ValidationError";
+    this.errors = errors;
   }
 
 }
 
-module.exports = Schema;
+module.exports = SchemaValidator;
